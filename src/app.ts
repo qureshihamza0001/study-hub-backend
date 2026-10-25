@@ -2,6 +2,9 @@
 import express from "express";
 import cors from "cors";
 import authRoutes from "./modules/auth/auth.routes.js";
+import { authMiddleware } from "./middlewares/auth.middleware.js";
+import notesRoutes from "./modules/notes/notes.routes.js";
+import tasksRoutes from "./modules/tasks/tasks.routes.js";
 
 const app = express();
 
@@ -17,4 +20,16 @@ app.get("/api/health", (_req, res) => {
   });
 });
 
+app.get("/api/auth/me", authMiddleware, (req, res) => {
+  const authReq = req as import("./middlewares/auth.middleware.js").AuthRequest;
+
+  res.status(200).json({
+    success: true,
+    message: "Authentication successful",
+    userId: authReq.userId,
+  });
+});
+
+app.use("/api/notes", notesRoutes);
+app.use("/api/tasks", tasksRoutes);
 export default app;
