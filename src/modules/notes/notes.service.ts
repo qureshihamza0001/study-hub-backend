@@ -14,9 +14,25 @@ export async function createNote(userId: string, input: CreateNoteInput) {
   });
 }
 
-export async function getNotes(userId: string) {
+export async function getNotes(
+  userId: string,
+  filters: { search?: string; category?: string } = {}
+) {
+  const { search, category } = filters;
+
   return prisma.note.findMany({
-    where: { userId },
+    where: {
+      userId,
+      ...(category ? { category } : {}),
+      ...(search
+        ? {
+            OR: [
+              { title: { contains: search, mode: "insensitive" } },
+              { content: { contains: search, mode: "insensitive" } },
+            ],
+          }
+        : {}),
+    },
     orderBy: { updatedAt: "desc" },
   });
 }

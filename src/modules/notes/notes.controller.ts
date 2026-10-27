@@ -40,11 +40,23 @@ export async function create(req: Request, res: Response) {
   }
 }
 
+
 export async function getAll(req: Request, res: Response) {
   const authReq = req as AuthRequest;
+  const search =
+    typeof req.query.search === "string"
+      ? req.query.search.trim()
+      : undefined;
+  const category =
+    typeof req.query.category === "string"
+      ? req.query.category.trim()
+      : undefined;
 
   try {
-    const notes = await notesService.getNotes(authReq.userId!);
+    const notes = await notesService.getNotes(authReq.userId!, {
+      ...(search ? { search } : {}),
+      ...(category ? { category } : {}),
+    });
 
     return res.status(200).json({
       success: true,
@@ -59,6 +71,7 @@ export async function getAll(req: Request, res: Response) {
     });
   }
 }
+
 
 export async function getOne(req: Request, res: Response) {
   const authReq = req as AuthRequest;

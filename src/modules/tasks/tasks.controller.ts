@@ -44,6 +44,7 @@ export async function create(req: Request, res: Response) {
   }
 }
 
+
 export async function getAll(req: Request, res: Response) {
   const userId = (req as AuthRequest).userId;
 
@@ -54,8 +55,44 @@ export async function getAll(req: Request, res: Response) {
     });
   }
 
+  const validStatuses = ["TODO", "IN_PROGRESS", "COMPLETED"] as const;
+  const validPriorities = ["LOW", "MEDIUM", "HIGH"] as const;
+
+  const status =
+    typeof req.query.status === "string" &&
+    validStatuses.includes(req.query.status as (typeof validStatuses)[number])
+      ? (req.query.status as (typeof validStatuses)[number])
+      : undefined;
+
+  const priority =
+    typeof req.query.priority === "string" &&
+    validPriorities.includes(
+      req.query.priority as (typeof validPriorities)[number]
+    )
+      ? (req.query.priority as (typeof validPriorities)[number])
+      : undefined;
+
+  if (req.query.status && !status) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid task status",
+      allowedValues: validStatuses,
+    });
+  }
+
+  if (req.query.priority && !priority) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid task priority",
+      allowedValues: validPriorities,
+    });
+  }
+
   try {
-    const tasks = await tasksService.getTasks(userId);
+    const tasks = await tasksService.getTasks(userId, {
+      ...(status ? { status } : {}),
+      ...(priority ? { priority } : {}),
+    });
 
     return res.status(200).json({
       success: true,
@@ -63,12 +100,14 @@ export async function getAll(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Get tasks error:", error);
+
     return res.status(500).json({
       success: false,
       message: "Failed to fetch tasks",
     });
   }
 }
+
 
 export async function getOne(req: Request, res: Response) {
   const userId = (req as AuthRequest).userId;

@@ -20,9 +20,19 @@ export async function createTask(
   });
 }
 
-export async function getTasks(userId: string) {
+export async function getTasks(
+  userId: string,
+  filters: {
+    status?: "TODO" | "IN_PROGRESS" | "COMPLETED";
+    priority?: "LOW" | "MEDIUM" | "HIGH";
+  } = {}
+) {
   return prisma.task.findMany({
-    where: { userId },
+    where: {
+      userId,
+      ...(filters.status ? { status: filters.status } : {}),
+      ...(filters.priority ? { priority: filters.priority } : {}),
+    },
     orderBy: { updatedAt: "desc" },
   });
 }
