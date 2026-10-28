@@ -7,6 +7,7 @@ import notesRoutes from "./modules/notes/notes.routes.js";
 import tasksRoutes from "./modules/tasks/tasks.routes.js";
 import dashboardRoutes from "./modules/dashboard/dashboard.routes.js";
 import materialsRoutes from "./modules/materials/materials.routes.js";
+import quizzesRoutes from "./modules/quizzes/quizzes.routes.js";
 
 const app = express();
 
@@ -36,4 +37,5 @@ app.use("/api/notes", notesRoutes);
 app.use("/api/tasks", tasksRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/materials", materialsRoutes);
+app.use("/api/quizzes", quizzesRoutes);
 export default app;
