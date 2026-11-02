@@ -10,6 +10,7 @@ import materialsRoutes from "./modules/materials/materials.routes.js";
 import quizzesRoutes from "./modules/quizzes/quizzes.routes.js";
 import flashcardsRoutes from "./modules/flashcards/flashcards.routes.js";
 import aiSummarizerRoutes from "./modules/ai-summarizer/ai-summarizer.routes.js";
+import studyAssistantRoutes from "./modules/study-assistant/study-assistant.routes.js";
 
 const app = express();
 
@@ -42,4 +43,5 @@ app.use("/api/materials", materialsRoutes);
 app.use("/api/quizzes", quizzesRoutes);
 app.use("/api/flashcards", flashcardsRoutes);
 app.use("/api/ai-summarizer", aiSummarizerRoutes);
+app.use("/api/study-assistant", studyAssistantRoutes);
 export default app;
